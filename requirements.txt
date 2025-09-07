@@ -1,0 +1,5 @@
+pyserial
+keyboard
+grpcio
+grpcio-tools
+protobuf

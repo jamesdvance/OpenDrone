@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package drone_control;
+
+option go_package = "github.com/opendrone/proto/pb";
+
+import "google/protobuf/empty.proto";
+
+service DroneControl {
+    rpc startLink(StartLinkReq) returns (google.protobuf.Empty);
+    rpc stopLink(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc setChannels(SetChannelsReq) returns (google.protobuf.Empty);
+    rpc armDrone(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc disarmDrone(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc resetControls(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc getStatus(google.protobuf.Empty) returns (DroneStatusRes);
+    rpc getKeyboardStream(google.protobuf.Empty) returns (stream KeyboardInput);
+}
+
+message StartLinkReq {
+    string port = 1;
+    int32 baud_rate = 2;
+}
+
+message SetChannelsReq {
+    repeated int32 channels = 1;
+}
+
+message DroneStatusRes {
+    bool armed = 1;
+    bool connected = 2;
+    repeated int32 channels = 3;
+    int64 timestamp = 4;
+}
+
+message KeyboardInput {
+    string key = 1;
+    bool pressed = 2;
+    int64 timestamp = 3;
+}
