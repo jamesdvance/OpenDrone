@@ -10,7 +10,7 @@ https://github.com/hg6185/MuJoCo
 ## Materials
 
 #### Micro TX
-The Micro TX sends and receives CRSF (aka 'Crossfire') packets between the drone and a transmitter - in this case, a 
+The Micro TX sends and receives CRSF (aka 'Crossfire') packets between the drone and a transmitter - in this case, a gpu-enabled computer
 
 Examples:
 * BetaVPV 1.4Ghz 1W Micro RF Model (recommended)

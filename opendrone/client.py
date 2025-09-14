@@ -1,7 +1,5 @@
 import grpc
 import time
-import threading
-import keyboard
 
 # Generated protobuf imports (would be generated from drone_control.proto)
 # import drone_control_pb2
@@ -21,10 +19,6 @@ class DroneClient:
         self.channels = [1024, 1024, 0, 1024, 1024, 1024, 1024, 1024]
         self.armed = False
         
-        # Control sensitivity settings
-        self.STEP_SIZE = 30
-        self.THROTTLE_STEP = 40
-        self.YAW_STEP = 20
         self.MAX_VALUE = 2047
         self.MIN_VALUE = 0
         self.MID_VALUE = 1024
@@ -158,65 +152,6 @@ class DroneClient:
             print(f"Failed to get status: {e}")
             return None
 
-    def keyboard_control(self):
-        """Handle keyboard input and send commands via gRPC"""
-        print("Keyboard control active. Use:")
-        print(" W/S: Throttle")
-        print(" A/D: Roll")
-        print(" UP/DOWN: Pitch")
-        print(" LEFT/RIGHT: Yaw")
-        print(" SPACE: Arm/Disarm")
-        print(" R: Reset controls")
-        print(" Q: Quit")
-
-        while self.running:
-            # Throttle control (W/S)
-            if keyboard.is_pressed("w"):
-                self.channels[2] = min(self.MAX_VALUE, self.channels[2] + self.THROTTLE_STEP)
-                self.send_channels()
-            if keyboard.is_pressed("s"):
-                self.channels[2] = max(self.MIN_VALUE, self.channels[2] - self.THROTTLE_STEP)
-                self.send_channels()
-            
-            # Roll control (A/D)
-            if keyboard.is_pressed('a'):
-                self.channels[0] = max(self.MIN_VALUE, self.channels[0] - self.STEP_SIZE)
-                self.send_channels()
-            if keyboard.is_pressed('d'):
-                self.channels[0] = min(self.MAX_VALUE, self.channels[0] + self.STEP_SIZE)
-                self.send_channels()
-            
-            # Pitch control (Up/Down arrows)
-            if keyboard.is_pressed('up'):
-                self.channels[1] = min(self.MAX_VALUE, self.channels[1] + self.STEP_SIZE)
-                self.send_channels()
-            if keyboard.is_pressed('down'):
-                self.channels[1] = max(self.MIN_VALUE, self.channels[1] - self.STEP_SIZE)
-                self.send_channels()
-            
-            # Yaw control (Left/Right arrows)
-            if keyboard.is_pressed('left'):
-                self.channels[3] = max(self.MIN_VALUE, self.channels[3] - self.YAW_STEP)
-                self.send_channels()
-            if keyboard.is_pressed('right'):
-                self.channels[3] = min(self.MAX_VALUE, self.channels[3] + self.YAW_STEP)
-                self.send_channels()
-            
-            # Special functions
-            if keyboard.is_pressed('space'):
-                if self.armed:
-                    self.disarm_drone()
-                else:
-                    self.arm_drone()
-                time.sleep(0.3)  # Debounce
-            if keyboard.is_pressed('r'):
-                self.reset_controls()
-                time.sleep(0.2)  # Debounce
-            if keyboard.is_pressed('q'):
-                self.stop()
-                break
-            
-            time.sleep(0.01)  # 100Hz update rate
 
     def start(self):
         """Start the drone client"""
@@ -228,10 +163,6 @@ class DroneClient:
             return False
         
         self.running = True
-        
-        # Start keyboard control in separate thread
-        keyboard_thread = threading.Thread(target=self.keyboard_control, daemon=True)
-        keyboard_thread.start()
         
         try:
             # Main loop: Send status updates
@@ -246,7 +177,6 @@ class DroneClient:
             print("\nReceived interrupt signal")
         finally:
             self.stop()
-            keyboard_thread.join(timeout=1.0)
         
         return True
 
