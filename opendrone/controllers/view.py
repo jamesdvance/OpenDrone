@@ -5,7 +5,7 @@ import serial
 import numpy as np
 
 
-class VideoStreamController:
+class VideoStreamOpenCV:
     def __init__(self, serial_port='/dev/ttyUSB1', baud_rate=115200, buffer_size=4096):
         self.serial_port = serial_port
         self.baud_rate = baud_rate

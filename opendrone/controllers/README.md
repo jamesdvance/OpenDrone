@@ -14,45 +14,45 @@ When implementing video streaming for drone applications, there are three main o
 
 ### OpenCV
 **Pros:**
-- ✅ Easy Python integration with simple API
-- ✅ Built-in display windows and basic processing capabilities
-- ✅ Excellent for prototyping and development
-- ✅ Good documentation and community support
+- Easy Python integration with simple API
+- Built-in display windows and basic processing capabilities
+- Excellent for prototyping and development
+- Good documentation and community support
 
 **Cons:**
-- ❌ Higher CPU usage for video decoding
-- ❌ Limited codec support compared to alternatives
-- ❌ Not optimized for real-time streaming applications
+- Higher CPU usage for video decoding
+- Limited codec support compared to alternatives
+- Not optimized for real-time streaming applications
 
 **Best for:** Development, prototyping, simple applications
 
 ### FFmpeg (python-ffmpeg/ffmpeg-python)
 **Pros:**
-- ✅ Excellent codec support and performance
-- ✅ Hardware acceleration support (GPU decoding)
-- ✅ Low latency streaming capabilities
-- ✅ Industry standard for video processing
-- ✅ Extensive format support
+- Excellent codec support and performance
+- Hardware acceleration support (GPU decoding)
+- Low latency streaming capabilities
+- Industry standard for video processing
+- Extensive format support
 
 **Cons:**
-- ❌ More complex API and setup
-- ❌ Requires external FFmpeg installation
-- ❌ Steeper learning curve
+- More complex API and setup
+- Requires external FFmpeg installation
+- Steeper learning curve
 
 **Best for:** Production applications, performance-critical streaming
 
 ### GStreamer
 **Pros:**
-- ✅ Best performance and lowest latency
-- ✅ Hardware acceleration support
-- ✅ Designed specifically for real-time streaming
-- ✅ Plugin architecture for maximum flexibility
-- ✅ Professional-grade streaming capabilities
+- Best performance and lowest latency
+- Hardware acceleration support
+- Designed specifically for real-time streaming
+- Plugin architecture for maximum flexibility
+- Professional-grade streaming capabilities
 
 **Cons:**
-- ❌ Steepest learning curve
-- ❌ More complex Python bindings
-- ❌ Requires additional system dependencies
+- Steepest learning curve
+- More complex Python bindings
+- Requires additional system dependencies
 
 **Best for:** Professional streaming applications, lowest latency requirements
 

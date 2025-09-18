@@ -1,0 +1,11 @@
+drone:
+  active_controllers:
+    keyboard: false
+    radio: false
+    programatic: none
+
+  ports:
+    crsf: none
+    video: none 
+
+  
