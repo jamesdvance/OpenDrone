@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package dronecontrol;
+
+import "google/protobuf/empty.proto";
+
+service DroneControl {
+    rpc startLink(StartLinkReq) returns (StartLinkResp);
+    rpc stopLink(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc setChannels(SetChannelsReq) returns (google.protobuf.Empty);
+    rpc armDrone(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc disarmDrone(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc resetControls(google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc getStatus(google.protobuf.Empty) returns (StatusResp);
+}
+
+message StartLinkReq {
+    string port = 1;
+    int32 baud_rate = 2;
+}
+
+message StartLinkResp {
+    bool success = 1;
+    string message = 2;
+}
+
+message SetChannelsReq {
+    repeated int32 channels = 1;
+}
+
+message StatusResp {
+    bool armed = 1;
+    bool connected = 2;
+    repeated int32 channels = 3;
+    int64 timestamp = 4;
+}

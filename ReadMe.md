@@ -1,4 +1,4 @@
-# OpenDrone
+# LocalDrone
 
 ExpressLRS (ELRS) - based autopilot software. The idea is to develop autonomous drones using the same basic inputs provided to a radio controller. Initially, the concept can be proven by providing a 'wasd' and up-down-left-right arrow-based control via the keyboard.
 

@@ -8,4 +8,7 @@ drone:
     crsf: none
     video: none 
 
+  specs:
+    always:pass
+
   

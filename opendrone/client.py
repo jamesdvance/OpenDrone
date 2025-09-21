@@ -1,9 +1,10 @@
 import grpc
 import time
 
-# Generated protobuf imports (would be generated from drone_control.proto)
-# import drone_control_pb2
-# import drone_control_pb2_grpc
+# Generated protobuf imports
+import drone_control_pb2
+import drone_control_pb2_grpc
+from google.protobuf import empty_pb2
 
 class DroneClient:
     def __init__(self, host='localhost', port=50051, serial_port='/dev/ttyUSB0', baud_rate=420000):
@@ -16,7 +17,7 @@ class DroneClient:
         self.connected = False
         self.running = False
         
-        self.channels = [1024, 1024, 0, 1024, 1024, 1024, 1024, 1024]
+        self.channels = [1024, 1024, 0, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024]  # 16 channels
         self.armed = False
         
         self.MAX_VALUE = 2047
@@ -28,7 +29,7 @@ class DroneClient:
         try:
             self.channel = grpc.insecure_channel(f'{self.host}:{self.port}')
             grpc.channel_ready_future(self.channel).result(timeout=10)
-            # self.stub = drone_control_pb2_grpc.DroneControlStub(self.channel)
+            self.stub = drone_control_pb2_grpc.DroneControlStub(self.channel)
             self.connected = True
             print(f"Connected to drone server at {self.host}:{self.port}")
             return True
@@ -36,7 +37,10 @@ class DroneClient:
             print(f"Failed to connect to server: {e}")
             return False
         except Exception as e:
-            print(f"Connection error: {e}")
+            if str(e) == "":
+                print(f"Connection error: Failed to connect to {self.host}:{self.port} - server not available")
+            else:
+                print(f"Connection error: {e}")
             return False
 
     def disconnect(self):
@@ -53,11 +57,14 @@ class DroneClient:
             return False
         
         try:
-            # request = drone_control_pb2.StartLinkReq(
-            #     port=self.serial_port,
-            #     baud_rate=self.baud_rate
-            # )
-            # response = self.stub.startLink(request)
+            request = drone_control_pb2.StartLinkReq(
+                port=self.serial_port,
+                baud_rate=self.baud_rate
+            )
+            response = self.stub.startLink(request)
+            if not response.success:
+                print(f"Server error: {response.message}")
+                return False
             print(f"Started drone link on {self.serial_port} at {self.baud_rate} baud")
             return True
         except grpc.RpcError as e:
@@ -70,7 +77,7 @@ class DroneClient:
             return
         
         try:
-            # response = self.stub.stopLink(google.protobuf.Empty())
+            response = self.stub.stopLink(empty_pb2.Empty())
             print("Stopped drone link")
         except grpc.RpcError as e:
             print(f"Failed to stop link: {e}")
@@ -81,9 +88,8 @@ class DroneClient:
             return
         
         try:
-            # request = drone_control_pb2.SetChannelsReq(channels=self.channels)
-            # response = self.stub.setChannels(request)
-            pass
+            request = drone_control_pb2.SetChannelsReq(channels=self.channels)
+            response = self.stub.setChannels(request)
         except grpc.RpcError as e:
             print(f"Failed to send channels: {e}")
 
@@ -94,7 +100,7 @@ class DroneClient:
             return
         
         try:
-            # response = self.stub.armDrone(google.protobuf.Empty())
+            response = self.stub.armDrone(empty_pb2.Empty())
             self.armed = True
             self.channels[4] = 2047  # Set Aux1 high
             print("Drone ARMED")
@@ -108,7 +114,7 @@ class DroneClient:
             return
         
         try:
-            # response = self.stub.disarmDrone(google.protobuf.Empty())
+            response = self.stub.disarmDrone(empty_pb2.Empty())
             self.armed = False
             self.channels[4] = 1024  # Set Aux1 low
             print("Drone DISARMED")
@@ -121,7 +127,7 @@ class DroneClient:
             return
         
         try:
-            # response = self.stub.resetControls(google.protobuf.Empty())
+            response = self.stub.resetControls(empty_pb2.Empty())
             self.channels[0] = self.MID_VALUE  # Roll
             self.channels[1] = self.MID_VALUE  # Pitch
             self.channels[3] = self.MID_VALUE  # Yaw
@@ -135,18 +141,12 @@ class DroneClient:
             return None
         
         try:
-            # response = self.stub.getStatus(google.protobuf.Empty())
-            # return {
-            #     'armed': response.armed,
-            #     'connected': response.connected,
-            #     'channels': list(response.channels),
-            #     'timestamp': response.timestamp
-            # }
+            response = self.stub.getStatus(empty_pb2.Empty())
             return {
-                'armed': self.armed,
-                'connected': self.connected,
-                'channels': self.channels,
-                'timestamp': int(time.time() * 1000)
+                'armed': response.armed,
+                'connected': response.connected,
+                'channels': list(response.channels),
+                'timestamp': response.timestamp
             }
         except grpc.RpcError as e:
             print(f"Failed to get status: {e}")
